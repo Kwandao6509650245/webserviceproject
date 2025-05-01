@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+h1 {
+    color: darkmagenta;
+}
+
+form {
+    margin-top: 20px;
+}
+
+input,
+button {
+    margin: 5px;
+    padding: 5px;
+}
+
+#message {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+#message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+#message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
