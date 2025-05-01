@@ -3,6 +3,7 @@ package com.example.service.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -12,6 +13,8 @@ import com.example.service.repository.RatingRepository;
 import com.example.service.repository.ServiceRepository;
 
 import java.net.http.HttpHeaders;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -45,6 +48,11 @@ public class ServiceController {
         return ratingRepository.save(rating);
     }
 
+    @GetMapping("/rate-service")
+    public List<Rating> getAllRating() {
+        return ratingRepository.findAll();
+    }
+
     // 3. API ค้นหาวันว่างจากฝั่งที่ 1
     @GetMapping("/available-slots")
     public List<String> getAvailableSlots() {
@@ -56,9 +64,35 @@ public class ServiceController {
     // 4. API การจองคิว (ส่งคำขอไปฝั่งที่ 1)
     @PostMapping("/book-appointment")
     public String bookAppointment(@RequestBody AppointmentRequest request) {
-        // ส่งคำขอไปยังฝั่งที่ 1
-        restTemplate.postForObject(bookingApiUrl + "/api/book-appointment", request, String.class);
-        return "Booking request sent successfully.";
+        String customerName = request.getName();
+        LocalDateTime time = request.getTime(); // รับเวลาเป็น LocalDateTime จาก UI
+
+        // แปลง LocalDateTime เป็น String ก่อนส่งไปที่ API
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        String timeAsString = time.format(formatter); // แปลง LocalDateTime เป็น String
+
+        System.out.println("Formatted Time: " + timeAsString);
+
+        // สร้าง object AppointmentRequest ใหม่ และส่งเวลาในรูปแบบ String
+        AppointmentRequest appointmentRequest = new AppointmentRequest(customerName, timeAsString);
+
+        // ส่งคำขอไปยัง BookingService
+        try {
+            // ใช้ restTemplate ส่งคำขอไปยัง API
+            String response = restTemplate.postForObject(bookingApiUrl + "/api/book-appointment", appointmentRequest,
+                    String.class);
+            return "Booking request sent successfully. Response: " + response;
+        } catch (Exception e) {
+            // ถ้าเกิดข้อผิดพลาดในการเรียก API
+            return "Error occurred while sending booking request: " + e.getMessage();
+        }
     }
 
+    @Controller
+    public class HomeController {
+        @GetMapping("/")
+        public String home() {
+            return "redirect:/index.html";
+        }
+    }
 }
