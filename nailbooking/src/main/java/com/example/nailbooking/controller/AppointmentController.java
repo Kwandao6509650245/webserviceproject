@@ -4,9 +4,8 @@ import com.example.nailbooking.model.*;
 import com.example.nailbooking.repository.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -45,7 +44,8 @@ public class AppointmentController {
     @PostMapping("/book-appointment")
     public Appointment bookAppointment(@RequestBody Map<String, String> payload) {
         String name = payload.get("name");
-        LocalDateTime time = LocalDateTime.parse(payload.get("time"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime time = LocalDateTime.parse(payload.get("time"), formatter);
         if (repository.existsByTime(time)) {
             throw new RuntimeException("Slot already booked");
         }

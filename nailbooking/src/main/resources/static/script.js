@@ -20,6 +20,7 @@ fetch('/api/available-slots')
             '</ul>';
     });
 
+
 document.getElementById('bookingForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -34,6 +35,9 @@ document.getElementById('bookingForm').addEventListener('submit', (e) => {
         .then(data => {
             alert(`Booking confirmed for ${data.customerName} at ${new Date(data.time).toLocaleString()}`);
             location.reload();
+            window.location.reload();
         })
         .catch(err => alert('Error: ' + err));
+
+
 });
