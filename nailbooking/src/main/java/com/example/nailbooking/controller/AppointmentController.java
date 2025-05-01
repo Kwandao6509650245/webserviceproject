@@ -2,21 +2,28 @@ package com.example.nailbooking.controller;
 
 import com.example.nailbooking.model.*;
 import com.example.nailbooking.repository.*;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin
 public class AppointmentController {
+    @Value("${nailbooking.api.service.url}")
+    private String serviceApiUrl;
+
+    private RestTemplate restTemplate;
 
     private final AppointmentRepository repository;
 
-    public AppointmentController(AppointmentRepository repository) {
+    public AppointmentController(AppointmentRepository repository, RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
         this.repository = repository;
     }
 
@@ -45,7 +52,8 @@ public class AppointmentController {
     @PostMapping("/book-appointment")
     public Appointment bookAppointment(@RequestBody Map<String, String> payload) {
         String name = payload.get("name");
-        LocalDateTime time = LocalDateTime.parse(payload.get("time"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDateTime time = LocalDateTime.parse(payload.get("time"), formatter);
         if (repository.existsByTime(time)) {
             throw new RuntimeException("Slot already booked");
         }
@@ -56,4 +64,12 @@ public class AppointmentController {
     public List<Appointment> getAllAppointments() {
         return repository.findAll();
     }
+
+    @GetMapping("/rating")
+    public List<RatingRequest> getAllRating() {
+        // เรียกใช้ API จากฝั่งที่ 1
+        List<RatingRequest> rating = restTemplate.getForObject(serviceApiUrl + "/api/rate-service", List.class);
+        return rating;
+    }
+
 }
