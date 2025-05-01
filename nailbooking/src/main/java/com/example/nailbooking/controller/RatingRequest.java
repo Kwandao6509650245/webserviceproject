@@ -1,24 +1,24 @@
-package com.example.service.model;
+package com.example.nailbooking.controller;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
-@Entity
-public class Rating {
+public class RatingRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int ratingValue;
     private String review;
 
-    public Rating() {
+    public RatingRequest() {
     }
 
-    public Rating(int ratingValue, String review) {
+    public RatingRequest(int ratingValue, String review) {
+
         this.ratingValue = ratingValue;
         this.review = review;
     }
