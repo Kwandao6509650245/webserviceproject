@@ -22,9 +22,9 @@ public class LoadDatabase {
             serviceRepo.save(s2);
 
             // Rating ต้องใช้ Service object
-            Rating r1 = new Rating(s1, 5, "Great service!");
-            Rating r2 = new Rating(s1, 4, "Very good");
-            Rating r3 = new Rating(s2, 3, "Could be better");
+            Rating r1 = new Rating(5, "Great service!");
+            Rating r2 = new Rating(4, "Very good");
+            Rating r3 = new Rating(3, "Could be better");
 
             ratingRepo.save(r1);
             ratingRepo.save(r2);
