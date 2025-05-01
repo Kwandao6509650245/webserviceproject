@@ -48,6 +48,11 @@ public class ServiceController {
         return ratingRepository.save(rating);
     }
 
+    @GetMapping("/rate-service")
+    public List<Rating> getAllRating() {
+        return ratingRepository.findAll();
+    }
+
     // 3. API ค้นหาวันว่างจากฝั่งที่ 1
     @GetMapping("/available-slots")
     public List<String> getAvailableSlots() {

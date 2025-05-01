@@ -3,12 +3,17 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Services</title>
+    <title>Nail Salon Services & Rating</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 2rem;
             background: #fff0f5;
+            padding: 2rem;
+        }
+
+        h1,
+        h2 {
+            color: #e48db1;
         }
 
         .service {
@@ -19,62 +24,94 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .rating {
-            margin-top: 1rem;
+        .rating-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: 2rem auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        select,
+        input,
+        button {
+            width: 100%;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
 
         button {
-            margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
             background: #e48db1;
             color: white;
             border: none;
-            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #d46b94;
         }
     </style>
 </head>
 
 <body>
-    <h1>Our Services</h1>
-    <div id="services">Loading...</div>
+    <h1>Welcome to Our Nail Salon</h1>
+
+    <h2>Our Services</h2>
+    <div id="services">Loading services...</div>
+
+    <div class="rating-box">
+        <h2>Rate Our Salon</h2>
+        <label for="rating">Your Rating:</label>
+        <select id="rating">
+            <option value="">-- Select Rating --</option>
+            <option value="1">1 ⭐</option>
+            <option value="2">2 ⭐</option>
+            <option value="3">3 ⭐</option>
+            <option value="4">4 ⭐</option>
+            <option value="5">5 ⭐</option>
+        </select>
+
+        <label for="comment">Comment:</label>
+        <input type="text" id="comment" placeholder="Write your feedback..." />
+
+        <button onclick="submitShopRating()">Submit Rating</button>
+    </div>
 
     <script>
         const baseUrl = 'http://localhost:8081/api';
 
         async function loadServices() {
-            const res = await fetch(`${baseUrl}/services`);
-            const services = await res.json();
+            try {
+                const res = await fetch(`${baseUrl}/services`);
+                const services = await res.json();
 
-            const container = document.getElementById('services');
-            container.innerHTML = '';
+                const container = document.getElementById('services');
+                container.innerHTML = '';
 
-            services.forEach(service => {
-                const div = document.createElement('div');
-                div.className = 'service';
-                div.innerHTML = `
-                    <strong>${service.name}</strong><br>
-                    ${service.description}<br>
-                    <div class="rating">
-                        <label>Rate this service: </label>
-                        <select id="rating-${service.id}">
-                            <option value="">--</option>
-                            <option value="1">1 ⭐</option>
-                            <option value="2">2 ⭐</option>
-                            <option value="3">3 ⭐</option>
-                            <option value="4">4 ⭐</option>
-                            <option value="5">5 ⭐</option>
-                        </select>
-                        <input type="text" id="comment-${service.id}" placeholder="Optional comment" />
-                        <button onclick="submitRating(${service.id})">Submit</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
+                services.forEach(service => {
+                    const div = document.createElement('div');
+                    div.className = 'service';
+                    div.innerHTML = `
+            <strong>${service.name}</strong><br>
+            ${service.description}`;
+                    container.appendChild(div);
+                });
+            } catch (err) {
+                document.getElementById('services').innerHTML = '<p style="color:red;">Error loading services.</p>';
+            }
         }
 
-        async function submitRating(serviceId) {
-            const rating = document.getElementById(`rating-${serviceId}`).value;
-            const comment = document.getElementById(`comment-${serviceId}`).value;
+        async function submitShopRating() {
+            const rating = document.getElementById('rating').value;
+            const comment = document.getElementById('comment').value;
 
             if (!rating) {
                 alert('Please select a rating.');
@@ -82,21 +119,20 @@
             }
 
             const body = {
-                serviceId: serviceId,
-                rating: parseInt(rating),
-                comment: comment
+                ratingValue: parseInt(rating),
+                review: comment
             };
 
-            const res = await fetch(`${baseUrl}/rate-service`, {
+            const res = await fetch('/api/rate-service', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)
             });
 
             if (res.ok) {
-                alert('Thank you for your feedback!');
-                document.getElementById(`rating-${serviceId}`).value = '';
-                document.getElementById(`comment-${serviceId}`).value = '';
+                alert('Thank you for rating our salon!');
+                document.getElementById('rating').value = '';
+                document.getElementById('comment').value = '';
             } else {
                 alert('Error submitting rating.');
             }

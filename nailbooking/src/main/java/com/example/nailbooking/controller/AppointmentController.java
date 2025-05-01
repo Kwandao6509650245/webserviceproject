@@ -2,7 +2,10 @@ package com.example.nailbooking.controller;
 
 import com.example.nailbooking.model.*;
 import com.example.nailbooking.repository.*;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,10 +15,15 @@ import java.util.*;
 @RequestMapping("/api")
 @CrossOrigin
 public class AppointmentController {
+    @Value("${nailbooking.api.service.url}")
+    private String serviceApiUrl;
+
+    private RestTemplate restTemplate;
 
     private final AppointmentRepository repository;
 
-    public AppointmentController(AppointmentRepository repository) {
+    public AppointmentController(AppointmentRepository repository, RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
         this.repository = repository;
     }
 
@@ -56,4 +64,12 @@ public class AppointmentController {
     public List<Appointment> getAllAppointments() {
         return repository.findAll();
     }
+
+    @GetMapping("/rating")
+    public List<RatingRequest> getAllRating() {
+        // เรียกใช้ API จากฝั่งที่ 1
+        List<RatingRequest> rating = restTemplate.getForObject(serviceApiUrl + "/api/rate-service", List.class);
+        return rating;
+    }
+
 }

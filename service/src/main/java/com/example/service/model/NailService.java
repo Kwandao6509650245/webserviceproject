@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@JsonIgnoreProperties({ "ratings" })
 public class NailService {
     @Id
     @GeneratedValue
@@ -26,17 +25,6 @@ public class NailService {
 
     public void setPrice(int price) {
         this.price = price;
-    }
-
-    @OneToMany(mappedBy = "service")
-    private List<Rating> ratings = new ArrayList<>();
-
-    public List<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
     }
 
     public NailService() {
