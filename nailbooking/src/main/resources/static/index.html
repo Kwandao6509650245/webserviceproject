@@ -3,22 +3,165 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nail Salon - Book Appointment</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Nail Booking System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1,
+        h2 {
+            color: #d63384;
+        }
+
+        form {
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #d63384;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #c21870;
+        }
+
+        #slots {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Book a Nail Appointment</h1>
+    <h1>Nail Salon Booking</h1>
 
-    <div id="slots"></div>
-    <h2>Booking Form</h2>
     <form id="bookingForm">
-        <input type="text" id="name" placeholder="Customer name" required />
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" required>
+
+        <label for="time">Choose Time Slot:</label>
         <select id="time" required></select>
+
         <button type="submit">Book Appointment</button>
     </form>
 
-    <script src="script.js"></script>
+    <div id="slots">
+        <h2>Loading Available Slots...</h2>
+    </div>
+
+    <div id="ratings">
+        <p class="loading">Loading ratings...</p>
+    </div>
+
+    <script>
+        fetch('/api/rating')
+            .then(res => res.json())
+            .then(data => {
+                const div = document.getElementById('ratings');
+                if (data.length === 0) {
+                    div.innerHTML = '<p>No ratings available at the moment.</p>';
+                    return;
+                }
+
+                const list = data.map(item =>
+                    `<li>
+                <strong>ID:</strong> ${item.id}<br>
+                <strong>Rating:</strong> ${item.ratingValue} / 5<br>
+                <strong>Review:</strong> ${item.review}
+            </li>`
+                ).join('');
+
+                div.innerHTML = `<ul>${list}</ul>`;
+            })
+            .catch(err => {
+                document.getElementById('ratings').innerHTML = `<p style="color:red;">Error loading ratings: ${err}</p>`;
+            });
+    </script>
+
+    <script>
+        fetch('/api/available-slots')
+            .then(res => res.json())
+            .then(data => {
+                const div = document.getElementById('slots');
+                const select = document.getElementById('time');
+
+                if (data.length === 0) {
+                    div.innerHTML = '<h2>No available slots today. Please try again later.</h2>';
+                    return;
+                }
+
+                div.innerHTML = '<h2>Available Slots:</h2><ul>' +
+                    data.map(slot => {
+                        const date = new Date(slot);
+                        const formatted = date.toLocaleString('en-US', {
+                            dateStyle: 'medium', timeStyle: 'short'
+                        });
+
+                        const option = document.createElement('option');
+                        option.value = slot;
+                        option.textContent = formatted;
+                        select.appendChild(option);
+
+                        return `<li>${formatted}</li>`;
+                    }).join('') + '</ul>';
+            });
+
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const time = document.getElementById('time').value;
+
+            fetch('/api/book-appointment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, time })
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.text().then(text => { throw new Error(text) });
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(`Booking confirmed for ${data.customerName} at ${new Date(data.time).toLocaleString()}`);
+                    window.location.reload();
+                })
+                .catch(err => alert('Error: ' + err.message));
+        });
+    </script>
 </body>
 
 </html>
