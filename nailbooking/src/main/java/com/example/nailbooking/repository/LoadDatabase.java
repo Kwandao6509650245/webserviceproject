@@ -18,8 +18,10 @@ public class LoadDatabase {
     @Bean
     CommandLineRunner initDatabase(AppointmentRepository repository) {
         return args -> {
-            repository.save(new Appointment("Alice", LocalDateTime.of(2025, 5, 2, 10, 0)));
-            repository.save(new Appointment("Bob", LocalDateTime.of(2025, 5, 2, 14, 0)));
+            repository.save(new Appointment("Alice", LocalDateTime.of(2025, 5, 3, 10, 0)));
+            repository.save(new Appointment("Bob", LocalDateTime.of(2025, 5, 3, 14, 0)));
+            repository.save(new Appointment("Alice", LocalDateTime.of(2025, 5, 4, 10, 0)));
+            repository.save(new Appointment("Bob", LocalDateTime.of(2025, 5, 4, 14, 0)));
         };
     }
 }
