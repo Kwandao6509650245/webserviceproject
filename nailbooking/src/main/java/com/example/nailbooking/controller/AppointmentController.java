@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api")
@@ -35,7 +33,7 @@ public class AppointmentController {
         List<LocalDateTime> slots = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
 
-        for (int dayOffset = 0; dayOffset <= 1; dayOffset++) {
+        for (int dayOffset = 0; dayOffset <= 2; dayOffset++) {
             LocalDate date = now.toLocalDate().plusDays(dayOffset);
             LocalDateTime start = date.atTime(9, 0);
             LocalDateTime end = date.atTime(18, 0);

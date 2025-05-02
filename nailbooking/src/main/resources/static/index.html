@@ -64,7 +64,7 @@
             box-sizing: border-box;
             font-size: 1.1em;
             background-color: #fff0f5;
-            color: #5f4b5b;
+            color: #6b5567;
         }
 
         input:focus,
@@ -141,10 +141,12 @@
 
     <form id="bookingForm">
         <label for="name">👩 Your Name:</label>
-        <input type="text" id="name" required>
+        <input type="text" id="name" placeholder="Enter your name" required>
 
         <label for="time">⏰ Select a Time Slot:</label>
-        <select id="time" required></select>
+        <select id="time" required>
+            <option value="" disabled selected hidden>-- Choose a available time slot --</option>
+        </select>
 
         <button type="submit">📌 Confirm Appointment</button>
     </form>
@@ -154,9 +156,8 @@
         <ul id="appointment-list"></ul>
     </div>
 
-    <!-- Added the title before the ratings section -->
+
     <div id="ratings">
-        <h2>💬 Feedback from Customers</h2> <!-- Added title here before the ratings -->
         <p class="loading">💖 Loading ratings...</p>
     </div>
 
@@ -171,12 +172,14 @@
                 }
 
                 const list = data.map(item =>
-                    `<li class="review-card">
+                    `
+                    <li class="review-card">
                         <p><strong>Rating:</strong> ⭐ ${item.ratingValue} / 5</p>
                         <p><strong>Review:</strong> “${item.review}”</p>
                     </li>`
                 ).join('');
-                div.innerHTML = `<ul class="review-list">${list}</ul>`;
+                div.innerHTML = `
+                <h2>💬 Feedback from Customers</h2><ul class="review-list">${list}</ul>`;
             })
             .catch(err => {
                 document.getElementById('ratings').innerHTML = `<p style="color:red;">Error loading ratings: ${err}</p>`;
@@ -197,6 +200,15 @@
                     select.disabled = true;
                     return;
                 }
+
+                const placeholder = document.createElement('option');
+                placeholder.value = '';
+                placeholder.textContent = '-- Choose an available time slot --';
+                placeholder.disabled = true;
+                placeholder.selected = true;
+                placeholder.hidden = true;
+                select.appendChild(placeholder);
+
 
                 data.forEach(slot => {
                     const date = new Date(slot);
