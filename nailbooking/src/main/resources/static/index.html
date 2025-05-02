@@ -181,9 +181,12 @@
     </form>
 
     <div id="appointment-section">
+
         <h2>📋 All Appointments</h2>
+
         <ul id="appointment-list"></ul>
     </div>
+
 
     <div id="ratings">
         <p class="loading">💖 Loading ratings...</p>
@@ -216,9 +219,12 @@
             .then(res => res.json())
             .then(data => {
                 const select = document.getElementById('time');
-                select.innerHTML = '';
+
+                select.innerHTML = ''; // ล้าง option เดิม
 
                 if (data.length === 0) {
+                    // ถ้าไม่มี slot ให้ disable dropdown และเพิ่ม option ว่าง
+
                     const option = document.createElement('option');
                     option.textContent = 'No available slots';
                     option.disabled = true;
@@ -227,6 +233,9 @@
                     select.disabled = true;
                     return;
                 }
+
+
+                // ถ้ามี slot ให้เพิ่มเป็น option
 
                 data.forEach(slot => {
                     const date = new Date(slot);
@@ -279,7 +288,9 @@
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('appointment-list');
-                list.innerHTML = '';
+
+                list.innerHTML = ''; // เคลียร์รายการเก่า
+
                 data.forEach(appointment => {
                     const item = document.createElement('li');
                     const date = new Date(appointment.time);
@@ -287,13 +298,16 @@
                         dateStyle: 'medium',
                         timeStyle: 'short'
                     });
+
                     item.textContent = `🕒 ${formatted} — 👤 ${appointment.customerName}`;
+
                     list.appendChild(item);
                 });
             })
             .catch(error => {
                 console.error('Error fetching appointments:', error);
             });
+
     </script>
 </body>
 
