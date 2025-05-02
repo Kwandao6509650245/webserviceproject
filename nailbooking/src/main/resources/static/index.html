@@ -31,19 +31,14 @@
 
         h1,
         h2 {
-            color: #f8bbd0;
+            color: #ff7eab;
             text-align: center;
         }
 
-        .description {
-            text-align: center;
-            font-size: 1.1em;
-            color: #6c4f5d;
-            margin-bottom: 20px;
-        }
-
-        form {
-            max-width: 100%;
+        form,
+        #appointment-section,
+        #ratings {
+            max-width: 60%;
             margin: 0 auto 20px;
             background: #fff;
             padding: 30px;
@@ -70,7 +65,6 @@
             font-size: 1.1em;
             background-color: #fff0f5;
             color: #5f4b5b;
-
         }
 
         input:focus,
@@ -90,7 +84,7 @@
         }
 
         button {
-            background-color: #ff045c;
+            background-color: #ffcff7 !important;
             font-weight: bold;
             margin-top: 20px;
             transition: background-color 0.3s ease;
@@ -98,26 +92,12 @@
             font-size: 1.2em;
             border: none;
             border-radius: 10px;
+            color: #ff4b87 !important;
         }
 
         button:hover {
-            background-color: #f8bbd0;
-
-            color: #6c4f5d;
-
-        }
-
-
-
-        #appointment-section,
-        #slots,
-        #ratings {
-            background: #fff;
-            max-width: 100%;
-            margin: 0 auto 20px;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #b3ffe7 !important;
+            color: #696969 !important;
         }
 
         ul {
@@ -129,46 +109,35 @@
             color: #6c4f5d;
         }
 
-        /* Color adjustments */
-        h1,
-        h2,
-        label,
-        button,
-        input:focus,
-        select:focus {
-            color: #ff4b87 !important;
+        /* Cute Review Styling */
+        .review-list {
+            list-style: none;
+            padding: 0;
         }
 
-        button {
-            background-color: #ffcff7 !important;
+        .review-card {
+            background-color: #fff0f8;
+            border: 1px solid #f8bbd0;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(214, 51, 132, 0.1);
+            font-size: 1em;
+            color: #6c4f5d;
         }
 
-        button:hover {
-            background-color: #b3ffe7 !important;
-            color: #696969 !important;
-
+        .review-card strong {
+            color: #ff4b87;
         }
 
-
-        input,
-        select {
-            border-color: #f8bbd0 !important;
-        }
-
-        input:focus,
-        select:focus {
-            box-shadow: 0 0 5px #f8bbd0 !important;
-        }
-
-        select {
-            background-image: url('data:image/svg+xml;utf8,<svg fill="%23f8bbd0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') !important;
+        .review-card::before {
+            content: "🌸 Feedback";
         }
     </style>
 </head>
 
 <body>
     <h1>💅 Nail Salon Booking</h1>
-    <p class="description">📅 Book your time slot for beautiful nails!</p>
 
     <form id="bookingForm">
         <label for="name">👩 Your Name:</label>
@@ -181,14 +150,13 @@
     </form>
 
     <div id="appointment-section">
-
         <h2>📋 All Appointments</h2>
-
         <ul id="appointment-list"></ul>
     </div>
 
-
+    <!-- Added the title before the ratings section -->
     <div id="ratings">
+        <h2>💬 Feedback from Customers</h2> <!-- Added title here before the ratings -->
         <p class="loading">💖 Loading ratings...</p>
     </div>
 
@@ -203,13 +171,12 @@
                 }
 
                 const list = data.map(item =>
-                    `<li>
-                        <strong>ID:</strong> ${item.id}<br>
-                        <strong>Rating:</strong> ${item.ratingValue} / 5<br>
-                        <strong>Review:</strong> ${item.review}
+                    `<li class="review-card">
+                        <p><strong>Rating:</strong> ⭐ ${item.ratingValue} / 5</p>
+                        <p><strong>Review:</strong> “${item.review}”</p>
                     </li>`
                 ).join('');
-                div.innerHTML = `<ul>${list}</ul>`;
+                div.innerHTML = `<ul class="review-list">${list}</ul>`;
             })
             .catch(err => {
                 document.getElementById('ratings').innerHTML = `<p style="color:red;">Error loading ratings: ${err}</p>`;
@@ -219,12 +186,9 @@
             .then(res => res.json())
             .then(data => {
                 const select = document.getElementById('time');
-
-                select.innerHTML = ''; // ล้าง option เดิม
+                select.innerHTML = '';
 
                 if (data.length === 0) {
-                    // ถ้าไม่มี slot ให้ disable dropdown และเพิ่ม option ว่าง
-
                     const option = document.createElement('option');
                     option.textContent = 'No available slots';
                     option.disabled = true;
@@ -233,9 +197,6 @@
                     select.disabled = true;
                     return;
                 }
-
-
-                // ถ้ามี slot ให้เพิ่มเป็น option
 
                 data.forEach(slot => {
                     const date = new Date(slot);
@@ -288,9 +249,7 @@
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('appointment-list');
-
-                list.innerHTML = ''; // เคลียร์รายการเก่า
-
+                list.innerHTML = '';
                 data.forEach(appointment => {
                     const item = document.createElement('li');
                     const date = new Date(appointment.time);
@@ -298,16 +257,13 @@
                         dateStyle: 'medium',
                         timeStyle: 'short'
                     });
-
                     item.textContent = `🕒 ${formatted} — 👤 ${appointment.customerName}`;
-
                     list.appendChild(item);
                 });
             })
             .catch(error => {
                 console.error('Error fetching appointments:', error);
             });
-
     </script>
 </body>
 
