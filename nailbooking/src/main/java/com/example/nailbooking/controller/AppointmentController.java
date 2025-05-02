@@ -23,7 +23,7 @@ public class AppointmentController {
     @GetMapping("/available-slots")
     public List<LocalDateTime> getAvailableSlots() {
         List<LocalDateTime> slots = new ArrayList<>();
-        LocalDateTime now = LocalDateTime.now().withSecond(0).withNano(0);
+        LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
         LocalDateTime start = now.withHour(9).withMinute(0);
         LocalDateTime end = now.withHour(18).withMinute(0);
 
@@ -31,7 +31,7 @@ public class AppointmentController {
             start = start.plusDays(1);
             end = end.plusDays(1);
         } else if (now.isAfter(start)) {
-            start = now.plusMinutes(1);
+            start = now.plusHours(1);
         }
 
         for (LocalDateTime slot = start; slot.isBefore(end); slot = slot.plusHours(1)) {
