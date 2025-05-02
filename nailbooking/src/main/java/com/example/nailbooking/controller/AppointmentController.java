@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api")
@@ -31,21 +34,24 @@ public class AppointmentController {
     public List<LocalDateTime> getAvailableSlots() {
         List<LocalDateTime> slots = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now().withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime start = now.withHour(9).withMinute(0);
-        LocalDateTime end = now.withHour(18).withMinute(0);
 
-        if (now.isAfter(end)) {
-            start = start.plusDays(1);
-            end = end.plusDays(1);
-        } else if (now.isAfter(start)) {
-            start = now.plusHours(1);
-        }
+        for (int dayOffset = 0; dayOffset <= 1; dayOffset++) {
+            LocalDate date = now.toLocalDate().plusDays(dayOffset);
+            LocalDateTime start = date.atTime(9, 0);
+            LocalDateTime end = date.atTime(18, 0);
 
-        for (LocalDateTime slot = start; slot.isBefore(end); slot = slot.plusHours(1)) {
-            if (!repository.existsByTime(slot)) {
-                slots.add(slot);
+            for (LocalDateTime slot = start; slot.isBefore(end); slot = slot.plusHours(1)) {
+                // ถ้าเป็นวันนี้ และ slot ก่อนเวลาปัจจุบัน ให้ข้าม
+                if (dayOffset == 0 && slot.isBefore(now.plusHours(1))) {
+                    continue;
+                }
+
+                if (!repository.existsByTime(slot)) {
+                    slots.add(slot);
+                }
             }
         }
+
         return slots;
     }
 
