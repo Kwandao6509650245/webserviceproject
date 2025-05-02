@@ -88,11 +88,4 @@ public class ServiceController {
         }
     }
 
-    @Controller
-    public class HomeController {
-        @GetMapping("/")
-        public String home() {
-            return "redirect:/index.html";
-        }
-    }
 }

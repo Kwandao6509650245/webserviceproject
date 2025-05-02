@@ -201,7 +201,7 @@
                 review: comment
             };
 
-            const res = await fetch('/api/rate-service', {
+            const res = await fetch('http://localhost:8081/api/rate-service', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(body)

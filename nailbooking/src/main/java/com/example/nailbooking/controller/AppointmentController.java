@@ -4,6 +4,7 @@ import com.example.nailbooking.model.*;
 import com.example.nailbooking.repository.*;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -76,4 +77,12 @@ public class AppointmentController {
         return rating;
     }
 
+}
+
+@Controller
+class HomeController {
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/index.html";
+    }
 }
