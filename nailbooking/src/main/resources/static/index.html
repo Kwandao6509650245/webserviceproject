@@ -3,89 +3,193 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Nail Booking System</title>
+    <title>💅 Nail Booking System</title>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background-color: #f9f9f9;
+            background: radial-gradient(circle at 20% 20%, #ffffff, #ffd8f4, #ffffff, #fbcbda);
+            background-size: 400% 400%;
+            animation: bgMove 20s ease infinite;
             margin: 0;
             padding: 20px;
+            color: #5f4b5b;
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         h1,
         h2 {
-            color: #d63384;
+            color: #f8bbd0;
+            text-align: center;
+        }
+
+        .description {
+            text-align: center;
+            font-size: 1.1em;
+            color: #6c4f5d;
+            margin-bottom: 20px;
         }
 
         form {
-            margin-bottom: 20px;
+            max-width: 100%;
+            margin: 0 auto 20px;
             background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(214, 51, 132, 0.2);
         }
 
         label {
             display: block;
-            margin-top: 10px;
+            margin-top: 12px;
             font-weight: bold;
+            color: #f8bbd0;
         }
 
         input,
         select,
         button {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            padding: 14px;
+            margin-top: 6px;
+            border: 1px solid #f8bbd0;
+            border-radius: 10px;
             box-sizing: border-box;
+            font-size: 1.1em;
+            background-color: #fff0f5;
+            color: #5f4b5b;
+
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #f8bbd0;
+            box-shadow: 0 0 5px #f8bbd0;
+            outline: none;
+        }
+
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23f8bbd0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px 16px;
+            padding-right: 40px;
         }
 
         button {
-            background-color: #d63384;
-            color: white;
-            cursor: pointer;
+            background-color: #ff045c;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            padding: 16px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 10px;
         }
 
         button:hover {
-            background-color: #c21870;
+            background-color: #f8bbd0;
+
+            color: #6c4f5d;
+
         }
 
-        #slots {
+
+
+        #appointment-section,
+        #slots,
+        #ratings {
             background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            margin: 0 auto 20px;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         ul {
             padding-left: 20px;
         }
+
+        .loading {
+            text-align: center;
+            color: #6c4f5d;
+        }
+
+        /* Color adjustments */
+        h1,
+        h2,
+        label,
+        button,
+        input:focus,
+        select:focus {
+            color: #ff4b87 !important;
+        }
+
+        button {
+            background-color: #ffcff7 !important;
+        }
+
+        button:hover {
+            background-color: #b3ffe7 !important;
+            color: #696969 !important;
+
+        }
+
+
+        input,
+        select {
+            border-color: #f8bbd0 !important;
+        }
+
+        input:focus,
+        select:focus {
+            box-shadow: 0 0 5px #f8bbd0 !important;
+        }
+
+        select {
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23f8bbd0" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>') !important;
+        }
     </style>
 </head>
 
 <body>
-    <h1>Nail Salon Booking</h1>
+    <h1>💅 Nail Salon Booking</h1>
+    <p class="description">📅 Book your time slot for beautiful nails!</p>
 
     <form id="bookingForm">
-        <label for="name">Your Name:</label>
+        <label for="name">👩 Your Name:</label>
         <input type="text" id="name" required>
 
-        <label for="time">Choose Time Slot:</label>
+        <label for="time">⏰ Select a Time Slot:</label>
         <select id="time" required></select>
 
-        <button type="submit">Book Appointment</button>
+        <button type="submit">📌 Confirm Appointment</button>
     </form>
 
     <div id="appointment-section">
-        <h2>All Appointments</h2>
+
+        <h2>📋 All Appointments</h2>
+
         <ul id="appointment-list"></ul>
     </div>
 
 
     <div id="ratings">
-        <p class="loading">Loading ratings...</p>
+        <p class="loading">💖 Loading ratings...</p>
     </div>
 
     <script>
@@ -94,34 +198,33 @@
             .then(data => {
                 const div = document.getElementById('ratings');
                 if (data.length === 0) {
-                    div.innerHTML = '<p>No ratings available at the moment.</p>';
+                    div.innerHTML = '<p>No ratings available right now.</p>';
                     return;
                 }
 
                 const list = data.map(item =>
                     `<li>
-                <strong>ID:</strong> ${item.id}<br>
-                <strong>Rating:</strong> ${item.ratingValue} / 5<br>
-                <strong>Review:</strong> ${item.review}
-            </li>`
+                        <strong>ID:</strong> ${item.id}<br>
+                        <strong>Rating:</strong> ${item.ratingValue} / 5<br>
+                        <strong>Review:</strong> ${item.review}
+                    </li>`
                 ).join('');
-
                 div.innerHTML = `<ul>${list}</ul>`;
             })
             .catch(err => {
                 document.getElementById('ratings').innerHTML = `<p style="color:red;">Error loading ratings: ${err}</p>`;
             });
-    </script>
 
-    <script>
         fetch('/api/available-slots')
             .then(res => res.json())
             .then(data => {
                 const select = document.getElementById('time');
+
                 select.innerHTML = ''; // ล้าง option เดิม
 
                 if (data.length === 0) {
                     // ถ้าไม่มี slot ให้ disable dropdown และเพิ่ม option ว่าง
+
                     const option = document.createElement('option');
                     option.textContent = 'No available slots';
                     option.disabled = true;
@@ -131,7 +234,9 @@
                     return;
                 }
 
+
                 // ถ้ามี slot ให้เพิ่มเป็น option
+
                 data.forEach(slot => {
                     const date = new Date(slot);
                     const formatted = date.toLocaleString('en-US', {
@@ -183,7 +288,9 @@
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('appointment-list');
+
                 list.innerHTML = ''; // เคลียร์รายการเก่า
+
                 data.forEach(appointment => {
                     const item = document.createElement('li');
                     const date = new Date(appointment.time);
@@ -191,7 +298,9 @@
                         dateStyle: 'medium',
                         timeStyle: 'short'
                     });
-                    item.textContent = `Time: ${formatted}, Customer: ${appointment.customerName}`;
+
+                    item.textContent = `🕒 ${formatted} — 👤 ${appointment.customerName}`;
+
                     list.appendChild(item);
                 });
             })
